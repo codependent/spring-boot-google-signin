@@ -2,6 +2,11 @@ spring:
   thymeleaf:
     cache: false
 
+google:
+  oauth2:
+    clientId: 157930201267-9946d8c252jvntt6jgvujra3mdfnbvnq.apps.googleusercontent.com
+    clientSecret: 81U3TAlw3TQf8bRnLQtSgFdb
+
 logging:
   level:
     org.springframework.security: DEBUG

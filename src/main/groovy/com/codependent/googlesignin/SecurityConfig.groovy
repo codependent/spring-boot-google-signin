@@ -14,8 +14,15 @@ class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers("/home").hasRole("USER")
 			.and()
 			.formLogin()
-				.loginPage("/login.html")
+				.loginPage("/login")
 				.failureUrl("/login-error");
+		/*
+			.authorizeRequests()
+			.anyRequest().authenticated()
+			.and()
+		.formLogin()
+			.and()
+		.httpBasic()*/
 	}
 	
 }

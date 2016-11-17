@@ -38,7 +38,7 @@ public class OAuth2Client {
 		googleOAuth2Details.setUserAuthorizationUri("https://accounts.google.com/o/oauth2/auth")
 		googleOAuth2Details.setAccessTokenUri("https://www.googleapis.com/oauth2/v3/token")
 		googleOAuth2Details.setScope(asList("openid"))
-		return googleOAuth2Details
+		googleOAuth2Details
 	}
 
 	@Resource
@@ -47,6 +47,6 @@ public class OAuth2Client {
 	@Bean
 	@Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
 	public OAuth2RestOperations googleOAuth2RestTemplate() {
-		return new OAuth2RestTemplate(googleOAuth2Details(), oAuth2ClientContext)
+		new OAuth2RestTemplate(googleOAuth2Details(), oAuth2ClientContext)
 	}
 }

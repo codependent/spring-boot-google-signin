@@ -10,6 +10,6 @@ import org.springframework.security.openid.OpenIDAuthenticationToken;
 class CustomUserDetailsService implements AuthenticationUserDetailsService<OpenIDAuthenticationToken> {
 	
 	UserDetails loadUserDetails(OpenIDAuthenticationToken token) throws UsernameNotFoundException {
-		return new User(token.name, "", AuthorityUtils.createAuthorityList("ROLE_USER"))
+		new User(token.name, "", AuthorityUtils.createAuthorityList("ROLE_USER"))
 	}
 }

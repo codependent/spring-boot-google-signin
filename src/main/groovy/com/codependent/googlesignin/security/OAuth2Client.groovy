@@ -19,7 +19,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 @Configuration
 @EnableOAuth2Client
-public class OAuth2Client {
+class OAuth2Client {
 	
 	@Value('${google.oauth2.clientId}')
 	private String clientId

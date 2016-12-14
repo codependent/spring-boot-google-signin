@@ -20,15 +20,16 @@ class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	OAuth2ClientContextFilter oAuth2ClientContextFilter
 	
+	/*
 	@Bean
 	public AuthenticationEntryPoint authenticationEntryPoint() {
 		return new LoginUrlAuthenticationEntryPoint(LOGIN_URL)
 	}
-
+	
 	@Bean
 	public OpenIDConnectAuthenticationFilter openIdConnectAuthenticationFilter() {
 		return new OpenIDConnectAuthenticationFilter(LOGIN_URL)
-	}
+	}*/
 
 	/*
 	@Bean
@@ -39,15 +40,26 @@ class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		AbstractPreAuthenticatedProcessingFilter.class
-		http.addFilterAfter(oAuth2ClientContextFilter/*()*/, AbstractPreAuthenticatedProcessingFilter.class)
+		/* I - OAuth 2
+		http.addFilterAfter(oAuth2ClientContextFilter, AbstractPreAuthenticatedProcessingFilter.class)
 			.addFilterAfter(openIdConnectAuthenticationFilter(), OAuth2ClientContextFilter.class)
 			.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
 			.and().authorizeRequests()
 			.antMatchers(GET, "/").permitAll()
 			.antMatchers(GET, "/home").authenticated()
 		
-		/** I
+		*/
+		
+		/*  II - Form Login */
+		http
+			.authorizeRequests()
+				.antMatchers(GET, "/secure-home").authenticated()
+				.and()
+			.formLogin()
+				.loginPage("/login")
+				.permitAll()
+				
+		/* III - Form Login + OAuth 2
 		http
 			.authorizeRequests()
 				.antMatchers("/home").hasRole("USER")
@@ -73,13 +85,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter{
 					.attribute("lastname")
 						.type("http://axschema.org/namePerson/last")
 						.required(true)
-		/*  II
-			.authorizeRequests()
-			.anyRequest().authenticated()
-			.and()
-		.formLogin()
-			.and()
-		.httpBasic()*/
+		*/
 	}
 	
 }

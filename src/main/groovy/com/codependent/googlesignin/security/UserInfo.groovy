@@ -3,7 +3,7 @@ package com.codependent.googlesignin.security
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-public class UserInfo {
+class UserInfo {
 	final String id
 	final String name
 	final String givenName

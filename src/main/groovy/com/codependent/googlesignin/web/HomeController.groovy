@@ -1,18 +1,23 @@
 package com.codependent.googlesignin.web
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
 
-@RestController
+@Controller
 class HomeController {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@RequestMapping("/home")
+	@GetMapping("/home")
 	void home(){
-		logger.info "hola"
+		logger.info "home hola"
+	}
+	
+	@GetMapping("/secure-home")
+	void secureHome(){
+		logger.info "secure-home hola"
 	}
 	
 }

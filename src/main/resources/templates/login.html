@@ -15,6 +15,11 @@
 				</table>
 			</form>
 		</div>
+		
+		<div>
+			<a href="/googleOAuth2">Login con Google</a>
+		</div>
+		
 	    <div th:fragment="content">
 	        <form name="foid" th:action="@{/login/openid}" method="post" id="openid_form">
 	            <input type="hidden" name="action" value="verify" />

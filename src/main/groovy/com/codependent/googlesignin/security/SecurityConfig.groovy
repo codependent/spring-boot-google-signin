@@ -2,90 +2,66 @@ package com.codependent.googlesignin.security
 
 import static org.springframework.http.HttpMethod.GET
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter
 
 @EnableWebSecurity
 class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	private final String LOGIN_URL = "/login";
+	@Configuration
+	@Order(1)
+	static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 	
-	@Autowired
-	OAuth2ClientContextFilter oAuth2ClientContextFilter
-	
-	/*
-	@Bean
-	public AuthenticationEntryPoint authenticationEntryPoint() {
-		return new LoginUrlAuthenticationEntryPoint(LOGIN_URL)
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http
+				.antMatcher("/secure-home")
+				.authorizeRequests()
+					.anyRequest().authenticated()
+					.and()
+				.formLogin()
+					.loginPage("/login")
+					.permitAll()
+		}
 	}
 	
-	@Bean
-	public OpenIDConnectAuthenticationFilter openIdConnectAuthenticationFilter() {
-		return new OpenIDConnectAuthenticationFilter(LOGIN_URL)
-	}*/
-
-	/*
-	@Bean
-	public OAuth2ClientContextFilter oAuth2ClientContextFilter() {
-		return new OAuth2ClientContextFilter()
-	}
-	*/
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Configuration
+	@Order(2)
+	static class OAuth2SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+	
+		private final String LOGIN_URL = "/googleLogin";
 		
-		/* I - OAuth 2
-		http.addFilterAfter(oAuth2ClientContextFilter, AbstractPreAuthenticatedProcessingFilter.class)
-			.addFilterAfter(openIdConnectAuthenticationFilter(), OAuth2ClientContextFilter.class)
+		@Autowired
+		OAuth2ClientContextFilter oAuth2ClientContextFilter
+		
+		@Bean
+		AuthenticationEntryPoint authenticationEntryPoint() {
+			new LoginUrlAuthenticationEntryPoint(LOGIN_URL)
+		}
+		
+		@Bean
+		OpenIDConnectAuthenticationFilter openIdConnectAuthenticationFilter() {
+			new OpenIDConnectAuthenticationFilter(LOGIN_URL)
+		}
+		
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http
+				.addFilterAfter(oAuth2ClientContextFilter, AbstractPreAuthenticatedProcessingFilter.class)
+				.addFilterAfter(openIdConnectAuthenticationFilter(), OAuth2ClientContextFilter.class)
 			.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-			.and().authorizeRequests()
-			.antMatchers(GET, "/").permitAll()
-			.antMatchers(GET, "/home").authenticated()
-		
-		*/
-		
-		/*  II - Form Login */
-		http
-			.authorizeRequests()
-				.antMatchers(GET, "/secure-home").authenticated()
-				.and()
-			.formLogin()
-				.loginPage("/login")
-				.permitAll()
-				
-		/* III - Form Login + OAuth 2
-		http
-			.authorizeRequests()
-				.antMatchers("/home").hasRole("USER")
 			.and()
-			.formLogin()
-				.loginPage("/login")
-				.failureUrl("/login-error")
-			.and()
-			
-			.openidLogin()
-				.loginPage("/login")
-				.permitAll()
-				.authenticationUserDetailsService(new CustomUserDetailsService())
-				.attributeExchange("https://www.google.com/.*")
-					.attribute("email")
-						.type("http://axschema.org/contact/email")
-						.required(true)
-						.and()
-					.attribute("firstname")
-						.type("http://axschema.org/namePerson/first")
-						.required(true)
-						.and()
-					.attribute("lastname")
-						.type("http://axschema.org/namePerson/last")
-						.required(true)
-		*/
+				.authorizeRequests()
+					.antMatchers(GET, "/googleOAuth2").authenticated()
+		}
 	}
-	
 }

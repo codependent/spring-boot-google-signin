@@ -19,23 +19,6 @@ class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Configuration
 	@Order(1)
-	static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
-	
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http
-				.antMatcher("/secure-home")
-				.authorizeRequests()
-					.anyRequest().authenticated()
-					.and()
-				.formLogin()
-					.loginPage("/login")
-					.permitAll()
-		}
-	}
-	
-	@Configuration
-	@Order(2)
 	static class OAuth2SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 	
 		private final String LOGIN_URL = "/googleLogin";
@@ -56,12 +39,34 @@ class SecurityConfig extends WebSecurityConfigurerAdapter{
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
+				.antMatcher("/google*")
 				.addFilterAfter(oAuth2ClientContextFilter, AbstractPreAuthenticatedProcessingFilter.class)
 				.addFilterAfter(openIdConnectAuthenticationFilter(), OAuth2ClientContextFilter.class)
 			.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
 			.and()
 				.authorizeRequests()
 					.antMatchers(GET, "/googleOAuth2").authenticated()
+		}
+	}
+	
+	@Configuration
+	@Order(2)
+	static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+	
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http
+				.authorizeRequests()
+					.antMatchers("/images/**", "/", "/home").permitAll()
+					.anyRequest().authenticated()
+					.and()
+				.formLogin()
+					.loginPage("/login")
+						.permitAll()
+					.defaultSuccessUrl("/secure-home")
+					.and()
+				.logout()
+					.logoutSuccessUrl("/home")
 		}
 	}
 }

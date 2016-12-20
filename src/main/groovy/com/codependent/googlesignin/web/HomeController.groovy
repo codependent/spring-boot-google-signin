@@ -10,9 +10,10 @@ class HomeController {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@GetMapping("/home")
-	void home(){
+	@GetMapping( value = ["/" , "/home"] )
+	def home(){
 		logger.info "home hola"
+		return "home"
 	}
 	
 	@GetMapping("/secure-home")
